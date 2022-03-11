@@ -179,7 +179,7 @@ class _HomePageState extends State<HomePage> {
       // The child of the Slidable is what the user sees when the
       // component is not dragged.
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 30),
+        margin: EdgeInsets.symmetric(horizontal: 30,vertical: 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: Colors.blueGrey,
