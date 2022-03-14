@@ -36,8 +36,8 @@ class _HomePageState extends State<HomePage> {
 
   }
 
-  _openCreatPage(){
-    var result = Navigator.of(context)
+  _openCreatPage()async{
+    var result = await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) {
       return CreatPage();
     }));
@@ -48,17 +48,25 @@ class _HomePageState extends State<HomePage> {
   }
 
   delete(String id)async{
-    await Network.DEL(Network.API_DELETE, Network.deleteParam(id)).then((value) => {
-
+    await Network.DEL(Network.API_DELETE+id.toString(), Network.paramsEmpty()).then((value) => {
+      // _resPostDelete(value!),
+      getCards(),
+      print(value),
     });
+  }
+
+  void _resPostDelete(String response){
+    setState(() {
+      isLoading = false;
+    });
+    if(response != null) getCards();
   }
 
 
   @override
   void initState() {
-    // TODO: implement initState
+    getCards();
     super.initState();
-      getCards();
   }
 
   @override
@@ -156,29 +164,22 @@ class _HomePageState extends State<HomePage> {
 
   Slidable visaCard(index) {
     return Slidable(
-      // Specify a key if the Slidable is dismissible.
       key: const ValueKey(0),
-
-      // The end action pane is the one at the right or the bottom side.
       endActionPane: ActionPane(
         motion: ScrollMotion(),
         children: [
           SlidableAction(
             onPressed:(ctx)=> {
               delete(cardList[index].id!),
-              getCards(),
             },
-            // backgroundColor: Color(0xFF0392CF),
             foregroundColor: Colors.black,
             icon: Icons.delete,
             label: 'Delete',
           ),
         ],
       ),
-
-      // The child of the Slidable is what the user sees when the
-      // component is not dragged.
       child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
         margin: EdgeInsets.symmetric(horizontal: 30,vertical: 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -191,7 +192,6 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Expanded(
                   child: Container(
-                    margin: EdgeInsets.all(20),
                     alignment: Alignment.topLeft,
                     child: Container(
                       height: 50,
@@ -205,7 +205,6 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Expanded(
                   child: Container(
-                    margin: EdgeInsets.all(20),
                     alignment: Alignment.topRight,
                     child: Container(
                       alignment: Alignment.center,
@@ -223,9 +222,47 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 30),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(cardList[index].cardNumber!.substring(0,4),style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
+                  Text(cardList[index].cardNumber!.substring(5,9),style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
+                  Text(cardList[index].cardNumber!.substring(10,14),style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
+                  Text(cardList[index].cardNumber!.substring(15,19),style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
+                ],
+              ),
+            ),
             Row(
               children: [
-                Text(cardList[index].cardNumber!),
+                Expanded(
+                  flex: 4,
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("CARD HOLDER",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 10)),
+                        Text(cardList[index].firstName!,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20)),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    // margin: EdgeInsets.symmetric(horizontal: 5),
+                    alignment: Alignment.center,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("EXPIRES",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 10)),
+                        Text(cardList[index].creatData!,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20)),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ],

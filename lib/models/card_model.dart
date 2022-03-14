@@ -4,9 +4,9 @@
 
 import 'dart:convert';
 
-List<VIsaCard> uploadImageFromJson(String str) => List<VIsaCard>.from(json.decode(str).map((x) => VIsaCard.fromJson(x)));
+List<VIsaCard> uploadImageFromJson(String str) => List<VIsaCard>.from(jsonDecode(str).map((x) => VIsaCard.fromJson(x)));
 
-String uploadImageToJson(List<VIsaCard> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String uploadImageToJson(List<VIsaCard> data) => jsonEncode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class VIsaCard {
   VIsaCard({
@@ -25,14 +25,14 @@ class VIsaCard {
   String? cvv;
   String? id;
 
-  factory VIsaCard.fromJson(Map<String, dynamic> json) => VIsaCard(
-    firstName: json["first_name"],
-    secondName: json["second_name"],
-    cardNumber: json["card_number"],
-    creatData: json["creat_data"],
-    cvv: json["cvv"],
-    id: json["id"],
-  );
+  VIsaCard.fromJson(Map<String, dynamic> json)
+    :firstName = json["first_name"],
+    secondName = json["second_name"],
+    cardNumber = json["card_number"],
+    creatData = json["creat_data"],
+    cvv =  json["cvv"],
+    id = json["id"];
+
 
   Map<String, dynamic> toJson() => {
     "first_name": firstName,

@@ -6,10 +6,11 @@ class Network {
   static bool isTester = true;
 
   static String SERVER_DEVELOPMENT = "622ac2de14ccb950d224953a.mockapi.io";
-  static String SERVER_PRODUCTION = "jsonplaceholder.typicode.com";
+  static String SERVER_PRODUCTION = "622ac2de14ccb950d224953a.mockapi.io";
 
   /* Header */
   static Map<String, String> headers={
+    "Content-Type" : "application/json"
   // "Authorization": "Client-ID 565RutOixmOocXRTpGVazfrMt5TXje7_YbeYS8rRlUc"
 };
 
@@ -28,20 +29,6 @@ class Network {
     return null;
   }
 
-  // static Future<String?> GET(String api, Map<String, dynamic>? params) async {
-  //   var options = BaseOptions(
-  //     baseUrl: getServer(),
-  //     headers: headers,
-  //     connectTimeout: 10000,
-  //     receiveTimeout: 3000,
-  //   );
-  //   Response response = await Dio(options).get(api, queryParameters: params);
-  //   Log.d(jsonEncode(response.data));
-  //   if (response.statusCode == 200) return jsonEncode(response.data);
-  //   return null;
-  // }
-
-
 
   static Future<String?> GET_ONE(String api, Map<String, String> params) async {
     var uri = Uri.https(getServer(), api, params,); // http or https
@@ -53,11 +40,10 @@ class Network {
 
   static Future<String?> POST(String api, Map<String, String> params) async {
     var uri = Uri.https(getServer(), api); // http or https
-    var response = await post(
-      uri,
-      body: jsonEncode(params),
-    );
-    if (response.statusCode == 200) return response.body;
+    var response = await post(uri, body: jsonEncode(params),headers: headers);
+
+    if (response.statusCode == 200 || response.statusCode == 201)
+      return response.body;
     return null;
   }
 
@@ -71,9 +57,10 @@ class Network {
   }
 
   static Future<String?> DEL(String api, Map<String, String> params) async {
-    var uri = Uri.https(getServer(), api, params);
-    var response = await get(uri);
+    var uri = Uri.https(getServer(), api, params); // http or https
+    var response = await delete(uri);
     if (response.statusCode == 200) return response.body;
+
     return null;
   }
 
@@ -100,31 +87,14 @@ class Network {
     return params;
   }
 
-  static Map<String, String> deleteParam(String id) {
-    Map<String, String> params = {};
-    params.addAll({
-      "id":id
-    });
-    return params;
-  }
-
-  static Map<String, dynamic> paramsSearch(int pageNumber,String query) {
-    Map<String, String> params = {};
-    params.addAll({
-      "page":pageNumber.toString(),
-      "query":query.toString()
-    });
-    return params;
-  }
-
   static Map<String, String> paramsCreate(VIsaCard card) {
-    Map<String, String> params = Map();
+    Map<String, String> params = {};
     params.addAll({
-      "first_name": card.firstName!,
-      "second_name": card.secondName!,
-      "creat_data": card.creatData!,
-      "card_number": card.cardNumber!.toString(),
-      "cvv": card.cvv!
+      'first_name': card.firstName!,
+      'second_name': card.secondName!,
+      'creat_data': card.creatData!,
+      'card_number': card.cardNumber!.toString(),
+      'cvv': card.cvv!
     });
     return params;
   }
